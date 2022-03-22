@@ -16,17 +16,19 @@ def import_images():
     return [categories, images]
 
 
+# import photos of green bananas
 def import_green():
-    dirlist_green = os.listdir('./pictures/learning/green')
-    green_img = np.empty((len(dirlist_green), 100, 100, 3), dtype=float)
+    dirlist_green = os.listdir('./pictures/learning/green')  # list of all file names in directory
+    green_img = np.empty((len(dirlist_green), 100, 100, 3), dtype=float)  # empty array for downsized color photos
     for i, im_name in enumerate(dirlist_green):
-        print(i, '. green')
-        img = image.imread(f'./pictures/learning/green/{im_name}')
-        img_resized = resize(img, (100, 100), anti_aliasing=True)
+        print(i, '. green')  # print current iteration
+        img = image.imread(f'./pictures/learning/green/{im_name}')  # read a photo
+        img_resized = resize(img, (100, 100), anti_aliasing=True)  # downsize a photo to 100x100 px
         green_img[i] = img_resized
     return green_img
 
 
+# import photos of ripe bananas
 def import_ripe():
     dirlist_ripe = os.listdir('./pictures/learning/ripe')
     ripe_img = np.empty((len(dirlist_ripe), 100, 100, 3), dtype=float)
@@ -38,6 +40,7 @@ def import_ripe():
     return ripe_img
 
 
+# import photos of overripe bananas
 def import_overripe():
     dirlist_overripe = os.listdir('./pictures/learning/overripe')
     overripe_img = np.empty((len(dirlist_overripe), 100, 100, 3), dtype=float)
