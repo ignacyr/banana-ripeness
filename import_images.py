@@ -8,12 +8,13 @@ def import_images():
     green_images = import_green()
     ripe_images = import_ripe()
     overripe_images = import_overripe()
+    test_samples_img = import_test_samples()
     images = np.concatenate((green_images, ripe_images, overripe_images))
     cat_green = np.full(len(green_images), 'g')
     cat_ripe = np.full(len(ripe_images), 'r')
     cat_overripe = np.full(len(overripe_images), 'o')
     categories = np.concatenate((cat_green, cat_ripe, cat_overripe))
-    return [categories, images]
+    return [categories, images, test_samples_img]
 
 
 # import photos of green bananas
@@ -47,3 +48,14 @@ def import_overripe():
         img = image.imread(f'./pictures/learning/overripe/{im_name}')
         overripe_img[i] = resize(img, (100, 100), anti_aliasing=True)
     return overripe_img
+
+
+# import test samples
+def import_test_samples():
+    dirlist_overripe = os.listdir('./pictures/test')
+    test_samples = np.empty((len(dirlist_overripe), 100, 100, 3), dtype=float)
+    for i, im_name in enumerate(dirlist_overripe):
+        print(i, '. test sample')
+        img = image.imread(f'./pictures/test/{im_name}')
+        test_samples[i] = resize(img, (100, 100), anti_aliasing=True)
+    return test_samples
