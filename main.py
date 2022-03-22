@@ -1,7 +1,8 @@
-from import_images import import_green, import_ripe, import_overripe
+from import_images import import_images
+import numpy as np
+from sklearn import svm
+from skimage.color import rgb2gray
 
-# numpy.set_printoptions(threshold=10)
+[categories, images] = import_images()
 
-import_green()
-import_ripe()
-import_overripe()
+gray_images = rgb2gray(images)
