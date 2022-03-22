@@ -23,8 +23,7 @@ def import_green():
     for i, im_name in enumerate(dirlist_green):
         print(i, '. green')  # print current iteration
         img = image.imread(f'./pictures/learning/green/{im_name}')  # read a photo
-        img_resized = resize(img, (100, 100), anti_aliasing=True)  # downsize a photo to 100x100 px
-        green_img[i] = img_resized
+        green_img[i] = resize(img, (100, 100), anti_aliasing=True)  # downsize a photo to 100x100 px
     return green_img
 
 
@@ -35,8 +34,7 @@ def import_ripe():
     for i, im_name in enumerate(dirlist_ripe):
         print(i, '. ripe')
         img = image.imread(f'./pictures/learning/ripe/{im_name}')
-        img_resized = resize(img, (100, 100), anti_aliasing=True)
-        ripe_img[i] = img_resized
+        ripe_img[i] = resize(img, (100, 100), anti_aliasing=True)
     return ripe_img
 
 
@@ -47,6 +45,5 @@ def import_overripe():
     for i, im_name in enumerate(dirlist_overripe):
         print(i, '. overripe')
         img = image.imread(f'./pictures/learning/overripe/{im_name}')
-        img_resized = resize(img, (100, 100), anti_aliasing=True)
-        overripe_img[i] = img_resized
+        overripe_img[i] = resize(img, (100, 100), anti_aliasing=True)
     return overripe_img
