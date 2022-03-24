@@ -3,6 +3,8 @@ import numpy as np
 import os
 from skimage.transform import resize
 
+# importing and downsizing images to 100x100 px
+
 
 def import_images():
     green_images = import_green()
