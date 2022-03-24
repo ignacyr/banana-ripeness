@@ -4,12 +4,12 @@ from sklearn.metrics import classification_report
 import numpy as np
 
 
-def mlp_classification(categories, images, test_samples):
+def mlp_classification(categories, images, test_samples, resolution):
     np.random.shuffle(test_samples)
-    reshaped_images = images.reshape(248, 30000)
-    reshaped_test_samples = test_samples.reshape(15, 30000)
+    reshaped_images = images.reshape(248, 3 * resolution**2)
+    reshaped_test_samples = test_samples.reshape(15, 3 * resolution**2)
 
-    mlp_class = MLPClassifier(max_iter=1000)
+    mlp_class = MLPClassifier(max_iter=200)
     mlp_class.fit(reshaped_images, categories)  # learning
 
     n_rows = 3
@@ -22,3 +22,6 @@ def mlp_classification(categories, images, test_samples):
             axes[i][j].axis('off')
             axes[i][j].set_title(f'MLP Label: {mlp_class.predict(reshaped_test_samples[samples_index].reshape(1, -1))}')
     plt.show()
+    print(reshaped_images.shape)
+    print(classification_report(categories, mlp_class.predict(reshaped_images)))
+    return
