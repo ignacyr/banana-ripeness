@@ -2,6 +2,7 @@ import matplotlib.image as image
 import numpy as np
 import os
 from skimage.transform import resize
+from tempfile import TemporaryFile
 
 # importing and downsizing images to 100x100 px
 
@@ -16,6 +17,9 @@ def import_images(resolution):
     cat_ripe = np.full(len(ripe_images), 'r')
     cat_overripe = np.full(len(overripe_images), 'o')
     categories = np.concatenate((cat_green, cat_ripe, cat_overripe))
+    np.save('categories', categories)
+    np.save('images', images)
+    np.save('test_samples_img', test_samples_img)
     return [categories, images, test_samples_img]
 
 
