@@ -9,7 +9,7 @@ import_images(resolution)
 
 categories = load('categories.npy')
 images = load('images.npy')
-test_samples = load('test_samples.npy')
+test_samples = load('test_samples_img.npy')
 
 decision_tree_classification(categories, images, test_samples, resolution)
 svc_classification(categories, images, test_samples, resolution)
