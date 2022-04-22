@@ -1,21 +1,22 @@
-from import_images import import_images
-from MLP_classification import mlp_classification
-from SVC_classification import svc_classification
-from decision_tree_classification import decision_tree_classification
-from numpy import load
+import import_images as ii
+from sklearn.neural_network import MLPClassifier
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+import numpy as np
+import classification as clf
 
 
 def main():
     resolution = 100  # don't set to more than 100
-    # import_images(resolution)
+    # ii.save_images(resolution)  # comment out if new pictures have been added
 
-    categories = load('categories.npy')
-    images = load('images.npy')
-    test_samples = load('test_samples_img.npy')
+    categories = np.load('data/categories.npy')
+    images = np.load('data/images.npy')
+    test_samples = np.load('data/test_samples_img.npy')
 
-    decision_tree_classification(categories, images, test_samples, resolution)
-    svc_classification(categories, images, test_samples, resolution)
-    mlp_classification(categories, images, test_samples, resolution)
+    clf.classification(categories, images, test_samples, resolution, DecisionTreeClassifier())
+    # clf.classification(categories, images, test_samples, resolution, SVC(max_iter=1000))
+    # clf.classification(categories, images, test_samples, resolution, MLPClassifier(max_iter=200))
 
 
 if __name__ == '__main__':

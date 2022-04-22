@@ -4,64 +4,33 @@ import os
 from skimage.transform import resize
 from tempfile import TemporaryFile
 
+
 # importing and downsizing images to 100x100 px
+def import_directory(resolution, path: str):
+    dirlist = os.listdir(path)
+    images_array = np.empty((len(dirlist), resolution, resolution, 3), dtype=float)
+    for i, im_name in enumerate(dirlist):
+        print(i, f'. {path}')
+        img = image.imread(f'{path}/{im_name}')
+        images_array[i] = resize(img, (resolution, resolution), anti_aliasing=True)
+    return images_array
 
 
-def import_images(resolution):
-    green_images = import_green(resolution)
-    ripe_images = import_ripe(resolution)
-    overripe_images = import_overripe(resolution)
-    test_samples_img = import_test_samples(resolution)
+# save images and categories to .npy files
+def save_images(resolution):
+    green_images = import_directory(resolution, './pictures/learning/green')
+    ripe_images = import_directory(resolution, './pictures/learning/ripe')
+    overripe_images = import_directory(resolution, './pictures/learning/overripe')
+    test_samples_img = import_directory(resolution, './pictures/test')
+
     images = np.concatenate((green_images, ripe_images, overripe_images))
+
     cat_green = np.full(len(green_images), 'green')
     cat_ripe = np.full(len(ripe_images), 'ripe')
     cat_overripe = np.full(len(overripe_images), 'overripe')
     categories = np.concatenate((cat_green, cat_ripe, cat_overripe))
-    np.save('categories', categories)
-    np.save('images', images)
-    np.save('test_samples_img', test_samples_img)
+
+    np.save('data/categories', categories)
+    np.save('data/images', images)
+    np.save('data/test_samples_img', test_samples_img)
     return [categories, images, test_samples_img]
-
-
-# import photos of green bananas
-def import_green(resolution):
-    dirlist_green = os.listdir('./pictures/learning/green')  # list of all file names in directory
-    green_img = np.empty((len(dirlist_green), resolution, resolution, 3), dtype=float)  # empty array for downsized color photos
-    for i, im_name in enumerate(dirlist_green):
-        print(i, '. green')  # print current iteration
-        img = image.imread(f'./pictures/learning/green/{im_name}')  # read a photo
-        green_img[i] = resize(img, (resolution, resolution), anti_aliasing=True)  # downsize a photo to 100x100 px
-    return green_img
-
-
-# import photos of ripe bananas
-def import_ripe(resolution):
-    dirlist_ripe = os.listdir('./pictures/learning/ripe')
-    ripe_img = np.empty((len(dirlist_ripe), resolution, resolution, 3), dtype=float)
-    for i, im_name in enumerate(dirlist_ripe):
-        print(i, '. ripe')
-        img = image.imread(f'./pictures/learning/ripe/{im_name}')
-        ripe_img[i] = resize(img, (resolution, resolution), anti_aliasing=True)
-    return ripe_img
-
-
-# import photos of overripe bananas
-def import_overripe(resolution):
-    dirlist_overripe = os.listdir('./pictures/learning/overripe')
-    overripe_img = np.empty((len(dirlist_overripe), resolution, resolution, 3), dtype=float)
-    for i, im_name in enumerate(dirlist_overripe):
-        print(i, '. overripe')
-        img = image.imread(f'./pictures/learning/overripe/{im_name}')
-        overripe_img[i] = resize(img, (resolution, resolution), anti_aliasing=True)
-    return overripe_img
-
-
-# import test samples
-def import_test_samples(resolution):
-    dirlist_overripe = os.listdir('./pictures/test')
-    test_samples = np.empty((len(dirlist_overripe), resolution, resolution, 3), dtype=float)
-    for i, im_name in enumerate(dirlist_overripe):
-        print(i, '. test sample')
-        img = image.imread(f'./pictures/test/{im_name}')
-        test_samples[i] = resize(img, (resolution, resolution), anti_aliasing=True)
-    return test_samples
