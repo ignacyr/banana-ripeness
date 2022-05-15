@@ -15,12 +15,14 @@ def classification(categories, images, test_samples, resolution, classifier):
     reshaped_test_samples = test_samples.reshape(15, 3 * resolution**2)
 
     start_time = t.time()
-    classifier.fit(reshaped_images, categories)  # learning
+    if type(classifier) != tuple:
+        classifier.fit(reshaped_images, categories)  # learning
+    else:
+        for i in range(len(classifier)):
+            classifier[i].fit(reshaped_images, categories)  # learning
     end_time = t.time()
     learning_time = end_time - start_time
-    print(f"Learning time of {classifier.__str__()}: {t.strftime('%M:%S', t.gmtime(learning_time))} [mm:ss]")
-
-    print(classifier.__str__())
+    # print(f"Learning time of {classifier.__str__()}: {t.strftime('%M:%S', t.gmtime(learning_time))} [mm:ss]")
 
     n_rows = 3
     n_cols = 5
@@ -31,16 +33,32 @@ def classification(categories, images, test_samples, resolution, classifier):
             samples_index = i * n_cols + j
             axes[i][j].imshow(test_samples[samples_index])
             axes[i][j].axis('off')
-            if len(classifier) == 1:
-                axes[i][j].set_title(classifier.predict(reshaped_test_samples[samples_index].reshape(1, -1)))
+            if type(classifier) != tuple:
+                axes[i][j].set_title(classifier.predict(reshaped_test_samples[samples_index].reshape(1, -1))[0])
             else:
                 all_probas = [None] * len(classifier)
                 for y in range(len(classifier)):
                     all_probas[y] = classifier[y].predict_proba(reshaped_test_samples[samples_index].reshape(1, -1))
-                axes[i][j].set_title(sum(all_probas) / len(all_probas))
-            print(classifier.predict_proba(reshaped_test_samples[samples_index].reshape(1, -1)))
+                avg = sum(all_probas) / len(all_probas)
+                avg = avg[0]
 
-    plt.suptitle(classifier.__str__())  # a name of a classifier
+                if avg[0] == max(avg):
+                    axes[i][j].set_title('green')
+                elif avg[1] == max(avg):
+                    axes[i][j].set_title('overripe')
+                else:
+                    axes[i][j].set_title('ripe')
+            # print(classifier.predict_proba(reshaped_test_samples[samples_index].reshape(1, -1)))
+
+    # plt.suptitle(f"Learning time of {classifier.__str__()}: {t.strftime('%M:%S', t.gmtime(learning_time))} [mm:ss]")
+    classifiers_str = ""
+    for obj in classifier:
+        if len(classifiers_str):
+            classifiers_str = classifiers_str + ', ' + obj.__str__()
+        else:
+            classifiers_str = obj.__str__()
+
+    plt.suptitle(f"Learning time of {classifiers_str}: {round(learning_time, 3)} [s]")
     plt.show()
 
     # print(classification_report(categories, classifier.predict(reshaped_images)))  # a classification report
