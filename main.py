@@ -1,9 +1,10 @@
-import import_images as ii
+import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
-import numpy as np
+
 import classification as clf
+import import_images as ii
 
 
 def main():
@@ -16,7 +17,7 @@ def main():
 
     clf.classification(categories, images, test_samples, resolution, DecisionTreeClassifier())
     # clf.classification(categories, images, test_samples, resolution, SVC(max_iter=1000))
-    # clf.classification(categories, images, test_samples, resolution, MLPClassifier(max_iter=200))
+    # clf.classification(categories, images, test_samples, resolution, MLPClassifier(max_iter=1000))
 
 
 if __name__ == '__main__':

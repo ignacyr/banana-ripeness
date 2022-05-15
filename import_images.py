@@ -1,12 +1,13 @@
-import matplotlib.image as image
-import numpy as np
 import os
-from skimage.transform import resize
 from tempfile import TemporaryFile
 
+import matplotlib.image as image
+import numpy as np
+from skimage.transform import resize
 
-# importing and downsizing images to 100x100 px
+
 def import_directory(resolution, path: str):
+    """Importing and downsizing images to 100x100 px"""
     dirlist = os.listdir(path)
     images_array = np.empty((len(dirlist), resolution, resolution, 3), dtype=float)
     for i, im_name in enumerate(dirlist):
@@ -16,8 +17,8 @@ def import_directory(resolution, path: str):
     return images_array
 
 
-# save images and categories to .npy files
 def save_images(resolution):
+    """Save images and categories to .npy files"""
     green_images = import_directory(resolution, './pictures/learning/green')
     ripe_images = import_directory(resolution, './pictures/learning/ripe')
     overripe_images = import_directory(resolution, './pictures/learning/overripe')
