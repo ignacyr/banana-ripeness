@@ -2,8 +2,6 @@ import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.ensemble import RandomForestClassifier
 
 import classification as clf
 import import_images as ii
@@ -17,9 +15,9 @@ def main():
     images = np.load('data/images.npy')
     test_samples = np.load('data/test_samples_img.npy')
 
-    clf.classification(categories, images, test_samples, resolution, LinearDiscriminantAnalysis())
-    clf.classification(categories, images, test_samples, resolution, RandomForestClassifier())
-    clf.classification(categories, images, test_samples, resolution, MLPClassifier(max_iter=1000))
+    clf.classification(categories, images, test_samples, resolution, DecisionTreeClassifier())
+    # clf.classification(categories, images, test_samples, resolution, SVC(max_iter=1000))
+    # clf.classification(categories, images, test_samples, resolution, MLPClassifier(max_iter=1000))
 
 
 if __name__ == '__main__':
