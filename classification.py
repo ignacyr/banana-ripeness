@@ -2,15 +2,15 @@ import time as t
 
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.metrics import classification_report
+# from sklearn.metrics import classification_report
 
 
-def classification(categories, images, test_samples, resolution, classifier):
+def classification(categories: np.ndarray, images: np.ndarray, test_samples: np.ndarray,
+                   resolution: int, classifier, title=""):
     """
     A universal function for classification.
     Pass an object of a classifier class as an argument 'classifier'.
     """
-    # np.random.shuffle(test_samples)
     reshaped_images = images.reshape(248, 3 * resolution**2)
     reshaped_test_samples = test_samples.reshape(15, 3 * resolution**2)
 
@@ -22,7 +22,6 @@ def classification(categories, images, test_samples, resolution, classifier):
             classifier[i].fit(reshaped_images, categories)  # learning
     end_time = t.time()
     learning_time = end_time - start_time
-    # print(f"Learning time of {classifier.__str__()}: {t.strftime('%M:%S', t.gmtime(learning_time))} [mm:ss]")
 
     n_rows = 3
     n_cols = 5
@@ -48,18 +47,22 @@ def classification(categories, images, test_samples, resolution, classifier):
                     axes[i][j].set_title('overripe')
                 else:
                     axes[i][j].set_title('ripe')
-            # print(classifier.predict_proba(reshaped_test_samples[samples_index].reshape(1, -1)))
 
-    # plt.suptitle(f"Learning time of {classifier.__str__()}: {t.strftime('%M:%S', t.gmtime(learning_time))} [mm:ss]")
     classifiers_str = ""
-    for obj in classifier:
-        if len(classifiers_str):
-            classifiers_str = classifiers_str + ', ' + obj.__str__()
-        else:
-            classifiers_str = obj.__str__()
+    if type(classifier) == tuple:
+        for obj in classifier:
+            if len(classifiers_str):
+                classifiers_str = classifiers_str + ', ' + obj.__str__()
+            else:
+                classifiers_str = obj.__str__()
+    else:
+        classifiers_str = classifier.__str__()
 
-    plt.suptitle(f"Learning time of {classifiers_str}: {round(learning_time, 3)} [s]")
+    if title:
+        plt.suptitle(title)
+    else:
+        plt.suptitle(f"Learning time of {classifiers_str}: {round(learning_time, 3)} [s]")
     plt.show()
 
-    # print(classification_report(categories, classifier.predict(reshaped_images)))  # a classification report
+    # print(classification_report(categories, classifier.predict(reshaped_images)))
     return
