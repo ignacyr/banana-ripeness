@@ -20,6 +20,8 @@ def classification(categories, images, test_samples, resolution, classifier):
     learning_time = end_time - start_time
     print(f"Learning time of {classifier.__str__()}: {t.strftime('%M:%S', t.gmtime(learning_time))} [mm:ss]")
 
+    print(classifier.__str__())
+
     n_rows = 3
     n_cols = 5
     _, axes = plt.subplots(n_rows, n_cols)
@@ -29,7 +31,14 @@ def classification(categories, images, test_samples, resolution, classifier):
             samples_index = i * n_cols + j
             axes[i][j].imshow(test_samples[samples_index])
             axes[i][j].axis('off')
-            axes[i][j].set_title(classifier.predict(reshaped_test_samples[samples_index].reshape(1, -1)))
+            if len(classifier) == 1:
+                axes[i][j].set_title(classifier.predict(reshaped_test_samples[samples_index].reshape(1, -1)))
+            else:
+                all_probas = [None] * len(classifier)
+                for y in range(len(classifier)):
+                    all_probas[y] = classifier[y].predict_proba(reshaped_test_samples[samples_index].reshape(1, -1))
+                axes[i][j].set_title(sum(all_probas) / len(all_probas))
+            print(classifier.predict_proba(reshaped_test_samples[samples_index].reshape(1, -1)))
 
     plt.suptitle(classifier.__str__())  # a name of a classifier
     plt.show()
