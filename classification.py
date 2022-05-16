@@ -2,7 +2,8 @@ import time as t
 
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.metrics import classification_report, accuracy_score
+import sklearn.metrics as sk_metrics
+import sklearn.model_selection as sk_ms
 
 
 class BananaClassifier:
@@ -19,6 +20,9 @@ class BananaClassifier:
         self.predictions = np.array([])
         self.reshaped_test_samples = np.array([])
         self.test_samples = np.array([])
+        self.y_true = np.array(['overripe', 'ripe', 'green', 'ripe', 'overripe', 'overripe', 'ripe', 'green',
+                                'green', 'ripe', 'ripe', 'overripe', 'green', 'green', 'overripe'])  # change to auto
+        self.y_pred = np.array([])
         return
 
     def fit(self, images: np.ndarray, categories: np.ndarray, resolution: int):
@@ -61,6 +65,12 @@ class BananaClassifier:
                 self.predictions = np.append(self.predictions, 'ripe')
         return self.predictions
 
+    # def score(self, x, y):
+    #     return sk_metrics.accuracy_score(x, y)
+    #
+    # def get_params(self, deep=True):
+    #     return self.classifier[0].get_params(deep)
+
     def plot(self, title=""):
         """Display categorized photos of the bananas."""
         n_rows = 3
@@ -89,28 +99,39 @@ class BananaClassifier:
 
     def predict_and_plot(self, test_samples: np.ndarray, resolution: int, title=""):
         """Run predict and plot functions one after another."""
-        self.predict(test_samples, resolution)
+        predictions = self.predict(test_samples, resolution)
         self.plot(title)
-        return self.predictions
+        return predictions
 
+    def print_metrics(self):
+        self.y_pred = self.predictions
+        print(f"Accuracy: {round(sk_metrics.accuracy_score(self.y_true, self.y_pred), 3)}")
+        print(f"F1 score: {round(sk_metrics.f1_score(self.y_true, self.y_pred, average='weighted'), 3)}")
+        print(f"Precision: {round(sk_metrics.precision_score(self.y_true, self.y_pred, average='weighted'), 3)}")  # micro/macro/weighted
+        print(f"Recall: {round(sk_metrics.recall_score(self.y_true, self.y_pred, average='weighted'), 3)}")
+        print(f"Confusion matrix:\n{sk_metrics.confusion_matrix(self.y_true, self.y_pred)}")
+        return
 
-class Metrics:
-    def __init__(self, b_classifier: BananaClassifier):
-        self.b_classifier = b_classifier
+    def learning_curve(self, images: np.ndarray, categories: np.ndarray, resolution: int, n_points: int):
+        reshaped_images = self.images.reshape(len(images), 3 * resolution ** 2)
+        train_sizes, train_scores, test_scores = {}, {}, {}
+        for clf in self.classifier:
+            train_sizes[clf], train_scores[clf], test_scores[clf] = sk_ms.learning_curve(
+                clf,
+                reshaped_images,
+                categories,
+                train_sizes=np.linspace(0.1, 1.0, n_points)
+            )
+        avg_train_sizes = sum(train_sizes.values()) / len(train_sizes)
+        avg_train_scores = sum(train_scores.values()) / len(train_scores)
+        avg_test_scores = sum(test_scores.values()) / len(test_scores)
+        plt.figure()
+        plt.plot(avg_train_sizes, avg_train_scores)
+        plt.figure()
+        plt.plot(avg_train_sizes, avg_test_scores)
+        plt.show()
+        return
+
+    def predict_that_photo(self, path: str):
         pass
-
-    def report(self):
-        """Display classification report"""
-        for clf in self.b_classifier.classifier:
-            print(clf.__str__())
-            print(classification_report(self.b_classifier.categories, clf.predict(self.b_classifier.reshaped_images)))
-        return
-
-    def accuracy(self):
-        y_true = np.array(['overripe', 'ripe', 'green', 'ripe', 'overripe', 'overripe', 'ripe', 'green',
-                           'green', 'ripe', 'ripe', 'overripe', 'green', 'green', 'overripe'])  # change to auto
-        y_pred = self.b_classifier.predictions
-        print(accuracy_score(y_true, y_pred))
-        return
-
 
