@@ -2,7 +2,7 @@ import time as t
 
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, accuracy_score
 
 
 class BananaClassifier:
@@ -91,11 +91,26 @@ class BananaClassifier:
         """Run predict and plot functions one after another."""
         self.predict(test_samples, resolution)
         self.plot(title)
-        return
+        return self.predictions
+
+
+class Metrics:
+    def __init__(self, b_classifier: BananaClassifier):
+        self.b_classifier = b_classifier
+        pass
 
     def report(self):
         """Display classification report"""
-        for clf in self.classifier:
+        for clf in self.b_classifier.classifier:
             print(clf.__str__())
-            print(classification_report(self.categories, clf.predict(self.reshaped_images)))
+            print(classification_report(self.b_classifier.categories, clf.predict(self.b_classifier.reshaped_images)))
         return
+
+    def accuracy(self):
+        y_true = np.array(['overripe', 'ripe', 'green', 'ripe', 'overripe', 'overripe', 'ripe', 'green',
+                           'green', 'ripe', 'ripe', 'overripe', 'green', 'green', 'overripe'])  # change to auto
+        y_pred = self.b_classifier.predictions
+        print(accuracy_score(y_true, y_pred))
+        return
+
+

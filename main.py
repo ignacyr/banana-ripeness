@@ -3,9 +3,9 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
 # from sklearn.svm import SVC
-# from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier
 
-from classification import BananaClassifier
+from classification import BananaClassifier, Metrics
 import import_images as ii
 
 
@@ -18,13 +18,19 @@ def main():
     images = np.load('data/images.npy')
     test_samples = np.load('data/test_samples_img.npy')
 
-    classifier = BananaClassifier(LinearDiscriminantAnalysis())
-    classifier.fit(images, categories, resolution)
-    classifier.predict_and_plot(test_samples, resolution)
+    classifier1 = BananaClassifier(LinearDiscriminantAnalysis(), RandomForestClassifier(), DecisionTreeClassifier())
+    classifier1.fit(images, categories, resolution)
+    classifier1.predict_and_plot(test_samples, resolution)
+    metrics1 = Metrics(classifier1)
+    metrics1.accuracy()
+    # metrics1.report()
 
-    classifiers = BananaClassifier(LinearDiscriminantAnalysis(), RandomForestClassifier(), MLPClassifier())
-    classifiers.fit(images, categories, resolution)
-    classifiers.predict_and_plot(test_samples, resolution)
+    classifier2 = BananaClassifier(MLPClassifier(max_iter=1000))
+    classifier2.fit(images, categories, resolution)
+    classifier2.predict_and_plot(test_samples, resolution)
+    metrics2 = Metrics(classifier2)
+    metrics2.accuracy()
+    # metrics2.report()
 
 
 if __name__ == '__main__':
