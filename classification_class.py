@@ -17,6 +17,7 @@ class BananaClassifier:
         self.reshaped_images = self.images.reshape(len(self.images), 3 * self.resolution ** 2)
         self.predictions = np.array([])
         self.reshaped_test_samples = np.array([])
+        self.test_samples = np.array([])
         return
 
     def fit(self):
@@ -33,55 +34,8 @@ class BananaClassifier:
         self.learning_time = end_time - start_time
         return
 
-    def predict(self, test_samples: np.ndarray, resolution: int, title=""):  # fix cohesion
-        """Predict banana ripeness based on the photos."""
-        reshaped_test_samples = test_samples.reshape(len(test_samples), 3 * resolution ** 2)
-
-        n_rows = 3
-        n_cols = 5
-        _, axes = plt.subplots(n_rows, n_cols)
-
-        for i in range(n_rows):
-            for j in range(n_cols):
-                samples_index = i * n_cols + j
-                axes[i][j].imshow(test_samples[samples_index])
-                axes[i][j].axis('off')
-                if type(self.classifier) != tuple:
-                    axes[i][j].set_title(
-                        self.classifier.predict(reshaped_test_samples[samples_index].reshape(1, -1))[0]
-                    )
-                else:
-                    all_probas = [None] * len(self.classifier)
-                    for y in range(len(self.classifier)):
-                        all_probas[y] = self.classifier[y].predict_proba(
-                            reshaped_test_samples[samples_index].reshape(1, -1)
-                        )
-                    avg = sum(all_probas) / len(all_probas)
-                    avg = avg[0]
-                    if avg[0] == max(avg):
-                        axes[i][j].set_title('green')
-                    elif avg[1] == max(avg):
-                        axes[i][j].set_title('overripe')
-                    else:
-                        axes[i][j].set_title('ripe')
-        classifiers_str = ""
-        if type(self.classifier) == tuple:
-            for obj in self.classifier:
-                if len(classifiers_str):
-                    classifiers_str = classifiers_str + ', ' + obj.__str__()
-                else:
-                    classifiers_str = obj.__str__()
-        else:
-            classifiers_str = self.classifier.__str__()
-
-        if title:
-            plt.suptitle(title)
-        else:
-            plt.suptitle(f"Learning time of {classifiers_str}: {round(self.learning_time, 3)} [s]")
-        plt.show()
-        return
-
-    def predict2(self, test_samples: np.ndarray, resolution: int):
+    def predict(self, test_samples: np.ndarray, resolution: int):
+        self.test_samples = test_samples
         self.reshaped_test_samples = test_samples.reshape(len(test_samples), 3 * resolution ** 2)
         for i in range(len(self.reshaped_test_samples)):
             if type(self.classifier) == tuple:
@@ -92,11 +46,11 @@ class BananaClassifier:
                     )
                 avg = (sum(all_probas) / len(all_probas))[0]
                 if avg[0] == max(avg):
-                    self.predictions[i] = 'green'
+                    self.predictions = np.append(self.predictions, 'green')
                 elif avg[1] == max(avg):
-                    self.predictions[i] = 'overripe'
+                    self.predictions = np.append(self.predictions, 'overripe')
                 else:
-                    self.predictions[i] = 'ripe'
+                    self.predictions = np.append(self.predictions, 'ripe')
             else:
                 self.predictions[i] = self.classifier.predict(self.reshaped_test_samples[i].reshape(1, -1))[0]
         return self.predictions
@@ -108,7 +62,8 @@ class BananaClassifier:
         for i in range(n_rows):
             for j in range(n_cols):
                 samples_index = i * n_cols + j
-                axes[i][j].imshow(self.reshaped_test_samples[samples_index])
+                print(self.reshaped_test_samples[samples_index].shape)  #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                axes[i][j].imshow(self.test_samples[samples_index])
                 axes[i][j].axis('off')
                 axes[i][j].set_title(self.predictions[samples_index])
         if title:
@@ -128,7 +83,7 @@ class BananaClassifier:
         return
 
     def predict_and_plot(self, test_samples: np.ndarray, resolution: int, title=""):
-        self.predict2(test_samples, resolution)
+        self.predict(test_samples, resolution)
         self.plot()
         return
 

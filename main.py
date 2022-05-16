@@ -21,7 +21,7 @@ def main():
     classifier = cc.BananaClassifier((RandomForestClassifier(), LinearDiscriminantAnalysis()),
                                      images, categories, resolution)
     classifier.fit()
-    classifier.predict(test_samples, resolution, "MIX")
+    classifier.predict_and_plot(test_samples, resolution, "MIX")
     classifier.report()
 
 
