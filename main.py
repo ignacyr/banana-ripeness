@@ -1,9 +1,9 @@
 import numpy as np
 from sklearn.neural_network import MLPClassifier
-from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.ensemble import RandomForestClassifier
+# from sklearn.svm import SVC
+# from sklearn.tree import DecisionTreeClassifier
 
 import classification as clf
 import import_images as ii

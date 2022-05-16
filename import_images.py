@@ -1,5 +1,4 @@
 import os
-from tempfile import TemporaryFile
 
 import matplotlib.image as image
 import numpy as np
