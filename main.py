@@ -24,7 +24,7 @@ def main():
     # classifier1.predict_and_plot(test_samples, resolution)
     # classifier1.print_metrics()
     classifier1.fit(images, categories, resolution)
-    classifier1.learning_curve(images, categories, resolution, 10)
+    classifier1.learning_curve(images, categories, resolution, 8)
     return
 
 

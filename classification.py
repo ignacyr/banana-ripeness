@@ -125,10 +125,15 @@ class BananaClassifier:
         avg_train_sizes = sum(train_sizes.values()) / len(train_sizes)
         avg_train_scores = sum(train_scores.values()) / len(train_scores)
         avg_test_scores = sum(test_scores.values()) / len(test_scores)
+
+        a_train_s_array = np.empty(len(avg_train_scores), dtype=float)
+        for i, a_train_s in enumerate(avg_train_scores):
+            a_train_s_array[i] = sum(a_train_s) / len(a_train_s)
+
         plt.figure()
-        plt.plot(avg_train_sizes, avg_train_scores)
-        plt.figure()
-        plt.plot(avg_train_sizes, avg_test_scores)
+        plt.plot(avg_train_sizes, a_train_s_array)
+        # plt.figure()
+        # plt.plot(avg_train_sizes, avg_test_scores)
         plt.show()
         return
 
