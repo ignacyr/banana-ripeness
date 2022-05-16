@@ -2,67 +2,98 @@ import time as t
 
 import matplotlib.pyplot as plt
 import numpy as np
-# from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report
 
 
-def classification(categories: np.ndarray, images: np.ndarray, test_samples: np.ndarray,
-                   resolution: int, classifier, title=""):
-    """
-    A universal function for classification.
-    Pass an object of a classifier class as an argument 'classifier'.
-    """
-    reshaped_images = images.reshape(248, 3 * resolution**2)
-    reshaped_test_samples = test_samples.reshape(15, 3 * resolution**2)
+class BananaClassifier:
+    """Banana ripeness classification based on the photos."""
+    def __init__(self, *classifier):
+        """Constructor initializes classifier object."""
+        self.classifier = classifier
+        self.learning_time = 0.0  # there should be a better way
+        self.predicting_time = 0.0
+        self.images = np.array([])
+        self.categories = np.array([])
+        self.resolution = np.array([])
+        self.reshaped_images = np.array([])
+        self.predictions = np.array([])
+        self.reshaped_test_samples = np.array([])
+        self.test_samples = np.array([])
+        return
 
-    start_time = t.time()
-    if type(classifier) != tuple:
-        classifier.fit(reshaped_images, categories)  # learning
-    else:
-        for i in range(len(classifier)):
-            classifier[i].fit(reshaped_images, categories)  # learning
-    end_time = t.time()
-    learning_time = end_time - start_time
+    def fit(self, images: np.ndarray, categories: np.ndarray, resolution: int):
+        """Learning classifier to classify bananas based on photos."""
 
-    n_rows = 3
-    n_cols = 5
-    _, axes = plt.subplots(n_rows, n_cols)
+        self.images = images
+        self.categories = categories
+        self.resolution = resolution
+        self.reshaped_images = self.images.reshape(len(self.images), 3 * self.resolution ** 2)
 
-    for i in range(n_rows):
-        for j in range(n_cols):
-            samples_index = i * n_cols + j
-            axes[i][j].imshow(test_samples[samples_index])
-            axes[i][j].axis('off')
-            if type(classifier) != tuple:
-                axes[i][j].set_title(classifier.predict(reshaped_test_samples[samples_index].reshape(1, -1))[0])
+        start_time = t.time()
+
+        for clf in self.classifier:
+            clf.fit(self.reshaped_images, self.categories)
+
+        end_time = t.time()
+        self.learning_time = end_time - start_time
+        return
+
+    def predict(self, test_samples: np.ndarray, resolution: int):
+        self.test_samples = test_samples
+        self.reshaped_test_samples = test_samples.reshape(len(test_samples), 3 * resolution ** 2)
+        for i, _ in enumerate(self.reshaped_test_samples):
+            all_probas = [None] * len(self.classifier)
+
+            start_time = t.time()
+
+            for y, _ in enumerate(self.classifier):
+                all_probas[y] = self.classifier[y].predict_proba(self.reshaped_test_samples[i].reshape(1, -1))
+
+            end_time = t.time()
+            self.predicting_time = end_time - start_time
+
+            avg = (sum(all_probas) / len(all_probas))[0]  # getting array out of array
+            if avg[0] == max(avg):
+                self.predictions = np.append(self.predictions, 'green')
+            elif avg[1] == max(avg):
+                self.predictions = np.append(self.predictions, 'overripe')
             else:
-                all_probas = [None] * len(classifier)
-                for y in range(len(classifier)):
-                    all_probas[y] = classifier[y].predict_proba(reshaped_test_samples[samples_index].reshape(1, -1))
-                avg = sum(all_probas) / len(all_probas)
-                avg = avg[0]
+                self.predictions = np.append(self.predictions, 'ripe')
+        return self.predictions
 
-                if avg[0] == max(avg):
-                    axes[i][j].set_title('green')
-                elif avg[1] == max(avg):
-                    axes[i][j].set_title('overripe')
+    def plot(self, title=""):
+        n_rows = 3
+        n_cols = 5
+        _, axes = plt.subplots(n_rows, n_cols)
+        for i in range(n_rows):
+            for j in range(n_cols):
+                samples_index = i * n_cols + j
+                axes[i][j].imshow(self.test_samples[samples_index])
+                axes[i][j].axis('off')
+                axes[i][j].set_title(self.predictions[samples_index])
+        if title:
+            plt.suptitle(title)
+        else:
+            classifiers_str = ""
+            for obj in self.classifier:
+                if classifiers_str:
+                    classifiers_str = f"{classifiers_str}, {obj.__str__()}"
                 else:
-                    axes[i][j].set_title('ripe')
+                    classifiers_str = obj.__str__()
+            plt.suptitle(f"{classifiers_str}\n "
+                         f"Learning time: {round(self.learning_time, 3)} [s]\n"
+                         f"Predicting time: {round(1000 * self.predicting_time, 3)} [ms]")
+        plt.show()
+        return
 
-    classifiers_str = ""
-    if type(classifier) == tuple:
-        for obj in classifier:
-            if len(classifiers_str):
-                classifiers_str = classifiers_str + ', ' + obj.__str__()
-            else:
-                classifiers_str = obj.__str__()
-    else:
-        classifiers_str = classifier.__str__()
+    def predict_and_plot(self, test_samples: np.ndarray, resolution: int, title=""):
+        self.predict(test_samples, resolution)
+        self.plot(title)
+        return
 
-    if title:
-        plt.suptitle(title)
-    else:
-        plt.suptitle(f"Learning time of {classifiers_str}: {round(learning_time, 3)} [s]")
-    plt.show()
-
-    # print(classification_report(categories, classifier.predict(reshaped_images)))
-    return
+    def report(self):
+        """Display classification report"""
+        for clf in self.classifier:
+            print(clf.__str__())
+            print(classification_report(self.categories, clf.predict(self.reshaped_images)))
+        return

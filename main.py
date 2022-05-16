@@ -5,7 +5,7 @@ from sklearn.ensemble import RandomForestClassifier
 # from sklearn.svm import SVC
 # from sklearn.tree import DecisionTreeClassifier
 
-import classification_class as cc
+from classification import BananaClassifier
 import import_images as ii
 
 
@@ -18,11 +18,13 @@ def main():
     images = np.load('data/images.npy')
     test_samples = np.load('data/test_samples_img.npy')
 
-    classifier = cc.BananaClassifier((RandomForestClassifier(), LinearDiscriminantAnalysis()),
-                                     images, categories, resolution)
-    classifier.fit()
-    classifier.predict_and_plot(test_samples, resolution, "MIX")
-    classifier.report()
+    classifier = BananaClassifier(LinearDiscriminantAnalysis())
+    classifier.fit(images, categories, resolution)
+    classifier.predict_and_plot(test_samples, resolution)
+
+    classifiers = BananaClassifier(LinearDiscriminantAnalysis(), RandomForestClassifier(), MLPClassifier())
+    classifiers.fit(images, categories, resolution)
+    classifiers.predict_and_plot(test_samples, resolution)
 
 
 if __name__ == '__main__':
