@@ -22,8 +22,7 @@ class BananaClassifier:
         return
 
     def fit(self, images: np.ndarray, categories: np.ndarray, resolution: int):
-        """Learning classifier to classify bananas based on photos."""
-
+        """Learn classifier to classify bananas based on photos."""
         self.images = images
         self.categories = categories
         self.resolution = resolution
@@ -39,6 +38,7 @@ class BananaClassifier:
         return
 
     def predict(self, test_samples: np.ndarray, resolution: int):
+        """Predict if banana is green, ripe or overripe."""
         self.test_samples = test_samples
         self.reshaped_test_samples = test_samples.reshape(len(test_samples), 3 * resolution ** 2)
         for i, _ in enumerate(self.reshaped_test_samples):
@@ -62,6 +62,7 @@ class BananaClassifier:
         return self.predictions
 
     def plot(self, title=""):
+        """Display categorized photos of the bananas."""
         n_rows = 3
         n_cols = 5
         _, axes = plt.subplots(n_rows, n_cols)
@@ -87,6 +88,7 @@ class BananaClassifier:
         return
 
     def predict_and_plot(self, test_samples: np.ndarray, resolution: int, title=""):
+        """Run predict and plot functions one after another."""
         self.predict(test_samples, resolution)
         self.plot(title)
         return
