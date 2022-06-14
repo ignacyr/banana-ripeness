@@ -105,6 +105,7 @@ class BananaClassifier:
         return predictions
 
     def print_metrics(self):
+        """Print metrics of a custom classifier."""
         self.y_pred = self.predictions
         print(f"Accuracy: {round(sk_metrics.accuracy_score(self.y_true, self.y_pred), 3)}")
         print(f"F1 score: {round(sk_metrics.f1_score(self.y_true, self.y_pred, average='weighted'), 3)}")
@@ -114,6 +115,7 @@ class BananaClassifier:
         return
 
     def learning_curve(self, images: np.ndarray, categories: np.ndarray, resolution: int, n_points: int):
+        """Plot learning curve of custom classifier."""
         reshaped_images = self.images.reshape(len(images), 3 * resolution ** 2)
         train_sizes, train_scores, test_scores = {}, {}, {}
         for clf in self.classifier:
