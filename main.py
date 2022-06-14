@@ -19,12 +19,11 @@ def main():
     images = np.load('data/images.npy')
     test_samples = np.load('data/test_samples_img.npy')
 
-    classifier1 = BananaClassifier(LinearDiscriminantAnalysis(), RandomForestClassifier())
-    # classifier1.fit(images, categories, resolution)
-    # classifier1.predict_and_plot(test_samples, resolution)
-    # classifier1.print_metrics()
+    classifier1 = BananaClassifier(RandomForestClassifier(), LinearDiscriminantAnalysis(), MLPClassifier())
     classifier1.fit(images, categories, resolution)
-    classifier1.learning_curve(images, categories, resolution, 8)
+    classifier1.predict_and_plot(test_samples, resolution)
+    classifier1.print_metrics()
+    classifier1.learning_curve(images, categories, resolution, n_points=8)
     return
 
 

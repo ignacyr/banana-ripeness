@@ -21,7 +21,7 @@ def save_images(resolution):
     green_images = import_directory(resolution, './pictures/learning/green')
     ripe_images = import_directory(resolution, './pictures/learning/ripe')
     overripe_images = import_directory(resolution, './pictures/learning/overripe')
-    test_samples_img = import_directory(resolution, './pictures/test')
+    test_samples_img = import_directory(resolution, './pictures/testing')
 
     images = np.concatenate((green_images, ripe_images, overripe_images))
 

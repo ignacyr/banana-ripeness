@@ -20,8 +20,9 @@ class BananaClassifier:
         self.predictions = np.array([])
         self.reshaped_test_samples = np.array([])
         self.test_samples = np.array([])
-        self.y_true = np.array(['overripe', 'ripe', 'green', 'ripe', 'overripe', 'overripe', 'ripe', 'green',
-                                'green', 'ripe', 'ripe', 'overripe', 'green', 'green', 'overripe'])  # change to auto
+        self.y_true = np.array(['overripe', 'ripe', 'green', 'green', 'green',
+                                'overripe', 'green', 'overripe', 'overripe', 'ripe',
+                                'ripe', 'ripe', 'ripe', 'overripe', 'green'])  # change to auto
         self.y_pred = np.array([])
         return
 
@@ -132,8 +133,8 @@ class BananaClassifier:
 
         plt.figure()
         plt.plot(avg_train_sizes, a_train_s_array)
-        # plt.figure()
-        # plt.plot(avg_train_sizes, avg_test_scores)
+        plt.xlabel('Iteration')
+        plt.ylabel('Score')
         plt.show()
         return
 
